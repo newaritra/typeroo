@@ -78,7 +78,7 @@ const TypingDetailsBar = ({
     }
   }, [inputStr, typingText, timerTime]);
   return (
-    <div className="flex bg-gradient-radial from-cyan-50  bg-opacity-10 to-transparent to-90% py-3 justify-around w-full font-semibold text-lg mt-24 mb-16 rounded border-cyan-700 border-solid border-2 text-cyan-700 capitalize">
+    <div className=" dark:bg-slate-600 dark:text-cyan-300 flex py-3 justify-around w-full font-semibold text-lg mt-24 mb-16 rounded border-cyan-700 border-solid border-2 text-cyan-700 capitalize">
       <p>acc: {typingMetrics.acc ? typingMetrics.acc + "%" : "Start Typing"}</p>
       <p>
         Time: {Math.floor(timerTime / 60) < 10 && "0"}
