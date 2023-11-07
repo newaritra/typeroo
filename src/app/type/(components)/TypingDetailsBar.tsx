@@ -29,67 +29,57 @@ const TypingDetailsBar = ({
       // The length of the input string we have to check against is not going to be longer than the typed string length
       // So we create the substring to check against our typed text
       setDisableInput(true);
+    } else {
+      const checkString = inputStr.substring(0, typingText.length);
+      const inputWords = checkString.split(" ").filter((el) => el != "");
+      let countMissedWhiteSpaces = 0;
+      const validTypedString = typingText
+        .split("")
+        .map((char, index) => {
+          //If the character in the typed text is an incorrect letter in the place of a whitespace replace it with a space
+          // Count the missed white space
+          if (char !== " " && checkString[index] == " ") {
+            countMissedWhiteSpaces++;
+            return " ";
+          }
+          return char;
+        })
+        .filter((char) => char != "")
+        .join("")
+        .trim();
+      const validTypedWords = validTypedString
+        .split(" ")
+        .filter((char) => char != "");
+      // If we have not typed a complete word length omit the last incomplete word from the valid words list
+      // The last word is valid if the last or last+1 character is a whitespace
+      // if (
+      //   inputStr[checkString.length] !== " " ||
+      //   inputStr[checkString.length - 1] !== " "
+      // ) {
+      //   validTypedWords.pop();
+      //   inputWords.pop();
+      // }
+      const correctTypedWords = validTypedWords.filter(
+        (word, index) => word == inputWords[index]
+      );
+      setTypingMetrics({
+        acc: Math.floor((correctTypedWords.length / inputWords.length) * 100),
+        countIncorrectWords: inputWords.length - correctTypedWords.length,
+        wpm: Math.floor(validTypedWords.length / ((120 - timerTime) / 60)),
+      });
+      console.log(
+        checkString,
+        validTypedString,
+        countMissedWhiteSpaces,
+        validTypedWords,
+        inputWords,
+        correctTypedWords
+      );
     }
-    setTypingMetrics((prev) => ({
-      ...prev,
-      wpm: Math.floor(
-        (inputStr.substring(0, typingText.length).split(" ").length -
-          typingMetrics.countIncorrectWords) /
-          ((120 - timerTime) / 60)
-      ),
-    }));
-  }, [timerTime]);
-
-  useEffect(() => {
-    const checkString = inputStr.substring(0, typingText.length);
-    const inputWords = checkString.split(" ").filter((el) => el != "");
-    let countMissedWhiteSpaces = 0;
-    const validTypedString = typingText
-      .split("")
-      .map((char, index) => {
-        //If the character in the typed text is an incorrect letter in the place of a whitespace replace it with a space
-        // Count the missed white space
-        if (char !== " " && checkString[index] == " ") {
-          countMissedWhiteSpaces++;
-          return " ";
-        }
-        return char;
-      })
-      .filter((char) => char != "")
-      .join("")
-      .trim();
-    const validTypedWords = validTypedString
-      .split(" ")
-      .filter((char) => char != "");
-    // If we have not typed a complete word length omit the last incomplete word from the valid words list
-    // The last word is valid if the last or last+1 character is a whitespace
-    // if (
-    //   inputStr[checkString.length] !== " " ||
-    //   inputStr[checkString.length - 1] !== " "
-    // ) {
-    //   validTypedWords.pop();
-    //   inputWords.pop();
-    // }
-    const correctTypedWords = validTypedWords.filter(
-      (word, index) => word == inputWords[index]
-    );
-    setTypingMetrics({
-      acc: Math.floor((correctTypedWords.length / inputWords.length) * 100),
-      countIncorrectWords: inputWords.length - correctTypedWords.length,
-      wpm: Math.floor(validTypedWords.length / ((120 - timerTime) / 60)),
-    });
-    console.log(
-      checkString,
-      validTypedString,
-      countMissedWhiteSpaces,
-      validTypedWords,
-      inputWords,
-      correctTypedWords
-    );
-  }, [inputStr, typingText]);
+  }, [inputStr, typingText, timerTime]);
   return (
     <div className="flex bg-gradient-radial from-cyan-50  bg-opacity-10 to-transparent to-90% py-3 justify-around w-full font-semibold text-lg mt-24 mb-16 rounded border-cyan-700 border-solid border-2 text-cyan-700 capitalize">
-      <p>acc: {typingMetrics.acc}%</p>
+      <p>acc: {typingMetrics.acc ? typingMetrics.acc + "%" : "Start Typing"}</p>
       <p>
         Time: {Math.floor(timerTime / 60) < 10 && "0"}
         {Math.floor(timerTime / 60)}:{Math.floor(timerTime % 60) < 10 && "0"}
