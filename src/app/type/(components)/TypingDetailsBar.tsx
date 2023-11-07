@@ -4,9 +4,14 @@ import React, { useEffect, useState } from "react";
 interface propTypes {
   typingText: string;
   inputStr: string;
+  setDisableInput: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TypingDetailsBar = ({ typingText, inputStr }: propTypes) => {
+const TypingDetailsBar = ({
+  typingText,
+  inputStr,
+  setDisableInput,
+}: propTypes) => {
   //custom hook for updatimg timer time
   const timerTime = useTimer(120);
   const [typingMetrics, setTypingMetrics] = useState<{
@@ -23,6 +28,7 @@ const TypingDetailsBar = ({ typingText, inputStr }: propTypes) => {
       // Send metrics to backend to update the scores
       // The length of the input string we have to check against is not going to be longer than the typed string length
       // So we create the substring to check against our typed text
+      setDisableInput(true);
     }
     setTypingMetrics((prev) => ({
       ...prev,
@@ -73,7 +79,7 @@ const TypingDetailsBar = ({ typingText, inputStr }: propTypes) => {
       wpm: Math.floor(validTypedWords.length / ((120 - timerTime) / 60)),
     });
     console.log(
-        checkString,
+      checkString,
       validTypedString,
       countMissedWhiteSpaces,
       validTypedWords,
@@ -83,13 +89,22 @@ const TypingDetailsBar = ({ typingText, inputStr }: propTypes) => {
   }, [inputStr, typingText]);
   return (
     <div className="flex bg-gradient-radial from-cyan-50  bg-opacity-10 to-transparent to-90% py-3 justify-around w-full font-semibold text-lg mt-24 mb-16 rounded border-cyan-700 border-solid border-2 text-cyan-700 capitalize">
-      <p>Typos:{typingMetrics.countIncorrectWords}</p>
+      <p>
+        acc:{" "}
+        {Math.floor(
+          ((inputStr.substring(0, typingText.length).split(" ").length -
+            typingMetrics.countIncorrectWords) /
+            inputStr.substring(0, typingText.length).split(" ").length) *
+            100
+        )}
+        %
+      </p>
       <p>
         Time: {Math.floor(timerTime / 60) < 10 && "0"}
         {Math.floor(timerTime / 60)}:{Math.floor(timerTime % 60) < 10 && "0"}
         {timerTime % 60}
       </p>
-      <p>WPM:{typingMetrics.wpm}</p>
+      <p>wpm: {typingMetrics.wpm || "Start Typing"}</p>
     </div>
   );
 };

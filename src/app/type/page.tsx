@@ -49,6 +49,7 @@ all.`.toLowerCase()
 const Page = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [typingText, setTypingText] = useState<string>("");
+  const [disableInput, setDisableInput] = useState<boolean>(false);
   const [typingString, setTypingString] = useState<{
     typedString: string;
     remainingString: string;
@@ -95,7 +96,11 @@ const Page = () => {
 
   return (
     <div className="px-10">
-      <TypingDetailsBar typingText={typingText} inputStr={str} />
+      <TypingDetailsBar
+        typingText={typingText}
+        inputStr={str}
+        setDisableInput={setDisableInput}
+      />
       <div
         ref={rootRef}
         style={{ wordSpacing: "0.5rem" }}
@@ -117,6 +122,7 @@ const Page = () => {
       <input
         onBlur={() => inputRef.current?.focus()}
         ref={inputRef}
+        disabled={disableInput}
         className=" opacity-0"
         value={typingText}
         onChange={(e) => setTypingText(e.target.value.toLowerCase())}
