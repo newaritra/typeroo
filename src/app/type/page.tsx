@@ -106,7 +106,7 @@ const Page = () => {
         style={{ wordSpacing: "0.5rem" }}
         className={
           styles.card +
-          "p-5 border-cyan-700 border-solid border-2 max-h-80 text-center whitespace-break-spaces overflow-y-scroll no-scrollbar rounded-lg text-lg font-semibold text-gray-500"
+          " p-4 border-cyan-700 border-solid border-2 max-h-80 text-justify whitespace-break-spaces overflow-y-scroll no-scrollbar rounded-lg text-lg font-semibold text-gray-500"
         }
       >
         <span

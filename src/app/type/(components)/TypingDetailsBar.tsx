@@ -15,10 +15,10 @@ const TypingDetailsBar = ({
   //custom hook for updatimg timer time
   const timerTime = useTimer(120);
   const [typingMetrics, setTypingMetrics] = useState<{
+    acc: number;
     countIncorrectWords: number;
-    countIncorrectCharacters: number;
     wpm: number;
-  }>({ countIncorrectCharacters: 0, countIncorrectWords: 0, wpm: 0 });
+  }>({ countIncorrectWords: 0, wpm: 0, acc: 0 });
   useEffect(() => {
     if (timerTime == 0) {
       // Calculate the words typed correctly
@@ -74,8 +74,8 @@ const TypingDetailsBar = ({
       (word, index) => word == inputWords[index]
     );
     setTypingMetrics({
+      acc: Math.floor((correctTypedWords.length / inputWords.length) * 100),
       countIncorrectWords: inputWords.length - correctTypedWords.length,
-      countIncorrectCharacters: 0,
       wpm: Math.floor(validTypedWords.length / ((120 - timerTime) / 60)),
     });
     console.log(
@@ -89,16 +89,7 @@ const TypingDetailsBar = ({
   }, [inputStr, typingText]);
   return (
     <div className="flex bg-gradient-radial from-cyan-50  bg-opacity-10 to-transparent to-90% py-3 justify-around w-full font-semibold text-lg mt-24 mb-16 rounded border-cyan-700 border-solid border-2 text-cyan-700 capitalize">
-      <p>
-        acc:{" "}
-        {Math.floor(
-          ((inputStr.substring(0, typingText.length).split(" ").length -
-            typingMetrics.countIncorrectWords) /
-            inputStr.substring(0, typingText.length).split(" ").length) *
-            100
-        )}
-        %
-      </p>
+      <p>acc: {typingMetrics.acc}%</p>
       <p>
         Time: {Math.floor(timerTime / 60) < 10 && "0"}
         {Math.floor(timerTime / 60)}:{Math.floor(timerTime % 60) < 10 && "0"}
